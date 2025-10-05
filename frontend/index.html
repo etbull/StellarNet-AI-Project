@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StellarNet</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Azonix', sans-serif;
+      color: white;
+    }
+
+    @font-face {
+      font-family: 'Azonix';
+      src: url('fonts/Azonix.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+
+    @font-face {
+      font-family: 'Code';
+      src: url('fonts/CODE Light.otf') format('opentype');
+      font-style: normal;
+      font-display: block;
+    }
+
+    /* Three.js canvas background */
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Zoom animation for title */
+    @keyframes zoomIn {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 1; }
+    }
+
+    /* Fade in */
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* Slide up and fade out for large title */
+    @keyframes slideUpFadeLarge {
+      0% { transform: translate(-50%, -50%) scale(2.5); opacity: 1; }
+      100% { transform: translate(-50%, -150%) scale(2.5); opacity: 0; }
+    }
+
+    /* Slide up and fade out for normal text */
+    @keyframes slideUpFadeNormal {
+      0% { transform: translate(-50%, -50%); opacity: 1; }
+      100% { transform: translate(-50%, -150%); opacity: 0; }
+    }
+
+    /* Slide in from bottom */
+    @keyframes slideInUp {
+      0% { transform: translate(-50%, 150%); opacity: 0; }
+      100% { transform: translate(-50%, -50%); opacity: 1; }
+    }
+
+    #loadingText, #scrollText {
+      position: absolute;
+      left: 50%;
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #loadingText {
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.2);
+      transform-origin: center center;
+      font-size: 32px;
+      opacity: 0;
+    }
+
+    #scrollText {
+      font-family: 'Code', sans-serif;
+      font-size: 20px;
+      top: 60%;
+      transform: translateX(-50%);
+      opacity: 0;
+      letter-spacing: 4px;
+    }
+
+    /* Classes triggered by JS */
+    .animate { animation: zoomIn 6s ease-out forwards; }
+    .fadeIn { animation: fadeIn 2s ease-out forwards; }
+    .slideUpFadeLarge { animation: slideUpFadeLarge 1.5s ease-in forwards; }
+    .slideUpFadeNormal { animation: slideUpFadeNormal 1.5s ease-in forwards; }
+    .slideInUp { animation: slideInUp 1.5s ease-out forwards; }
+
+    /* Menu styles */
+    #menuContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 5;
+      overflow-y: auto;
+    }
+
+    #menuContainer.show {
+      display: flex;
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin: 0 0 10px 0;
+    }
+
+    p {
+      font-family: 'Code', sans-serif;
+      font-size: 20px;
+      max-width: 700px;
+      line-height: 1.6;
+      letter-spacing: 1px;
+      margin: 0 0 30px 0;
+    }
+
+    #mainContent {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Data panel */
+    .data-panel {
+      width: 90%;
+      max-width: 900px;
+      border-top: 1px solid white;
+      border-bottom: 1px solid white;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.2);
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .slot {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .slot:last-child {
+      border-bottom: none;
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons styled like "Press to continue" */
+    .menu-button {
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 25px;
+    }
+
+    .menu-button:hover {
+      background: white;
+      color: black;
+    }
+
+    /* Table styling */
+    table {
+      margin: 0 auto;
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 8px 16px;
+      border: 1px solid white;
+    }
+
+    /* Full screen dashboard */
+    .dashboard {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+      color: white;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Code', sans-serif;
+      font-size: 20px;
+      padding: 40px;
+      box-sizing: border-box;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .dashboard.active {
+      display: flex;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .dashboard-content {
+      text-align: center;
+      max-width: 800px;
+      backdrop-filter: blur(15px);
+      background: rgba(0,0,0,0.4);
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      margin: auto;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .dashboard h2 {
+      font-family: 'Azonix', sans-serif;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      margin-top: 30px;
+      border-radius: 25px;
+    }
+
+    .back-button:hover {
+      background: white;
+      color: black;
+    }
+    
+    .matrix-container {
+      font-family: 'Code', sans-serif;
+      font-size: 16px;
+    }
+    
+    .matrix-title {
+      margin-bottom: 10px;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+    
+    .matrix-table {
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    
+    .matrix-table td {
+      padding: 12px 20px;
+      border: 1px solid white;
+      text-align: center;
+      min-width: 60px;
+    }
+    
+    .matrix-table .label {
+      font-weight: bold;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Exoplanet Explorer */
+    .explorer {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+      color: white;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+
+    .explorer.active {
+      display: flex;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .explorer-content {
+      width: 90%;
+      max-width: 1200px;
+      max-height: 85vh;
+      backdrop-filter: blur(15px);
+      background: rgba(0,0,0,0.4);
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .explorer-title {
+      font-family: 'Azonix', sans-serif;
+      font-size: 36px;
+      margin-bottom: 20px;
+      flex-shrink: 0;
+    }
+
+    .explorer-data {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .chart-container {
+      width: 100%;
+      max-width: 1000px;
+      height: 300px;
+      min-height: 300px;
+      max-height: 300px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    #fluxChart {
+      max-height: 100%;
+    }
+
+    .data-display {
+      display: flex;
+      gap: 40px;
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+
+    .data-item {
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .data-label {
+      opacity: 0.7;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+
+    .data-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Code', sans-serif;
+      font-size: 24px;
+      padding: 20px 30px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-button:hover {
+      background: white;
+      color: black;
+    }
+
+    .nav-button.left {
+      left: 20px;
+    }
+
+    .nav-button.right {
+      right: 20px;
+    }
+
+    .close-explorer {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 25px;
+    }
+
+    .close-explorer:hover {
+      background: white;
+      color: black;
+    }
+
+    /* Upload Interface */
+    .upload-interface {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+      color: white;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+
+    .upload-interface.active {
+      display: flex;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .upload-content {
+      max-width: 800px;
+      backdrop-filter: blur(15px);
+      background: rgba(0,0,0,0.4);
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      text-align: center;
+    }
+
+    .upload-content h2 {
+      font-family: 'Azonix', sans-serif;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .upload-content p {
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .upload-button {
+      font-family: 'Code', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 25px;
+      margin: 10px;
+    }
+
+    .upload-button:hover {
+      background: white;
+      color: black;
+    }
+
+    .loading-spinner {
+      display: none;
+      margin: 20px auto;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-spinner.active {
+      display: block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-message {
+      font-family: 'Code', sans-serif;
+      font-size: 16px;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .result-message.success {
+      display: block;
+      background: rgba(0,255,0,0.2);
+      border: 1px solid rgba(0,255,0,0.5);
+    }
+
+    .result-message.error {
+      display: block;
+      background: rgba(255,0,0,0.2);
+      border: 1px solid rgba(255,0,0,0.5);
+    }
+
+    #fileInput {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas container for Three.js -->
+  <div id="canvas-container"></div>
+
+  <!-- Landing Page Elements -->
+  <div id="loadingText">S t e l l a r N e t</div>
+  <div id="scrollText">Scroll To Continue</div>
+
+  <!-- Menu Container -->
+  <div id="menuContainer">
+    <h1>Welcome to StellarNet</h1>
+    <p>
+      The Tool That Helps Amateur Astronomers to Discover Exoplanets. Trained on profiessional and Amateur data.
+    </p>
+
+    <div id="mainContent">
+      <div class="data-panel">
+        <!-- Slot 1 -->
+        <div class="slot">
+          <button class="menu-button" id="exploreBtn">Explore current Exoplanets</button>
+        </div>
+        <!-- Slot 2 -->
+        <div class="slot">
+          <div class="stats-container">
+            <table>
+              <tr><td>Testing Loss</td><td>0.0811</td></tr>
+              <tr><td>Accuracy</td><td>0.9794</td></tr>
+              <tr><td>F1-score</td><td>0.6000</td></tr>
+            </table>
+            
+            <div class="matrix-container">
+              <div class="matrix-title">Confusion Matrix (Test Data)</div>
+              <table class="matrix-table">
+                <tr>
+                  <td class="label"></td>
+                  <td class="label">Pred: No</td>
+                  <td class="label">Pred: Yes</td>
+                </tr>
+                <tr>
+                  <td class="label">Actual: No</td>
+                  <td>534</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td class="label">Actual: Yes</td>
+                  <td>9</td>
+                  <td>9</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Slot 3 -->
+        <div class="slot">
+          <button class="menu-button" id="searchBtn">Search for new Exoplanets</button>
+        </div>
+        <!-- Slot 4 -->
+        <div class="slot">
+          <button class="menu-button" onclick="window.open('https://science.nasa.gov/exoplanets/', '_blank')">
+            Learn more about exoplanets
+          </button>
+        </div>
+        <!-- Slot 5 -->
+        <div class="slot">
+          <button class="menu-button" id="learnModelBtn">Learn about the model</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full screen dashboard -->
+  <div class="dashboard" id="dashboard">
+    <div class="dashboard-content">
+      <h2>Model Dashboard</h2>
+      
+      <div style="text-align: left; max-width: 700px; margin: 0 auto;">
+        <h3 style="font-family: 'Azonix', sans-serif; font-size: 24px; margin-top: 20px; margin-bottom: 15px;">Architecture</h3>
+        <p style="margin-bottom: 15px;">
+          Our exoplanet detection system uses a <strong>1D Convolutional Neural Network (CNN)</strong> 
+          specifically designed to analyze time-series light flux data.
+        </p>
+        
+        <h3 style="font-family: 'Azonix', sans-serif; font-size: 20px; margin-top: 25px; margin-bottom: 10px;">Network Structure</h3>
+        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; font-family: 'Code', sans-serif; font-size: 14px; line-height: 1.8; margin-bottom: 15px;">
+          <strong>Convolutional Layers:</strong><br/>
+          • Conv1D (1 → 32 channels, kernel=5) + BatchNorm<br/>
+          • Conv1D (32 → 64 channels, kernel=5) + BatchNorm<br/>
+          • Conv1D (64 → 128 channels, kernel=3) + BatchNorm<br/>
+          • MaxPooling (stride=2)<br/>
+          • Dropout (0.3)<br/>
+          <br/>
+          <strong>Fully Connected Layers:</strong><br/>
+          • FC1 (flattened → 128 units)<br/>
+          • FC2 (128 → 2 classes)
+        </div>
+
+        <h3 style="font-family: 'Azonix', sans-serif; font-size: 20px; margin-top: 25px; margin-bottom: 10px;">Training Data</h3>
+        <p style="margin-bottom: 10px;">
+          The model was trained on a diverse dataset combining:
+        </p>
+        <ul style="font-family: 'Code', sans-serif; line-height: 1.8; margin-bottom: 15px;">
+          <li><strong>Lightkurve API data</strong> - Professional light flux measurements from NASA's Kepler missions</li>
+          <li><strong>Amateur observations</strong> - Community-contributed data to improve real-world applicability</li>
+        </ul>
+
+        <h3 style="font-family: 'Azonix', sans-serif; font-size: 20px; margin-top: 25px; margin-bottom: 10px;">Data Processing</h3>
+        <p style="margin-bottom: 15px;">
+          All input data is <strong>scaled and standardized</strong> to ensure consistent predictions 
+          regardless of the source telescope or observation conditions. We automatically scale and transform data submitted by users.
+        </p>
+
+        <h3 style="font-family: 'Azonix', sans-serif; font-size: 20px; margin-top: 25px; margin-bottom: 10px;">Handling Class Imbalance</h3>
+        <p style="margin-bottom: 15px;">
+          Since exoplanets are rare, we employed:
+        </p>
+        <ul style="font-family: 'Code', sans-serif; line-height: 1.8;">
+          <li><strong>Class weighting</strong> - Increased importance of positive exoplanet examples during training</li>
+          <li><strong>Data augmentation</strong> - Generated additional synthetic exoplanet signals to balance the dataset</li>
+        </ul>
+      </div>
+
+      <button class="back-button" id="backBtn">Back to Menu</button>
+    </div>
+  </div>
+
+  <!-- Exoplanet Explorer -->
+  <div class="explorer" id="explorer">
+    <div class="explorer-content">
+      <button class="close-explorer" id="closeExplorer">Back to Menu</button>
+      <h2 class="explorer-title" id="explorerTitle">Exoplanet 1</h2>
+      <div class="explorer-data">
+        <div class="chart-container">
+          <canvas id="fluxChart"></canvas>
+        </div>
+        <div class="data-display">
+          <div class="data-item">
+            <div class="data-label">Predicted Class</div>
+            <div class="data-value" id="predClass">-</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Actual Class</div>
+            <div class="data-value" id="actualClass">-</div>
+          </div>
+          <div class="data-item">
+            <div class="data-label">Prediction Certainty</div>
+            <div class="data-value" id="predCertainty">-</div>
+          </div>
+        </div>
+      </div>
+      <button class="nav-button left" id="prevBtn">‹</button>
+      <button class="nav-button right" id="nextBtn">›</button>
+    </div>
+  </div>
+
+  <!-- Upload Interface -->
+  <div class="upload-interface" id="uploadInterface">
+    <div class="upload-content">
+      <h2>Search for New Exoplanets</h2>
+      <p>
+        Upload your CSV file containing flux data (Any number of values) to analyze potential exoplanets.
+        Our AI model will process your data and predict whether it contains an exoplanet signal.
+      </p>
+      <input type="file" id="fileInput" accept=".csv" />
+      <button class="upload-button" id="uploadBtn">Upload Your Own Data</button>
+      <div class="loading-spinner" id="loadingSpinner"></div>
+      <div class="result-message" id="resultMessage"></div>
+      <button class="upload-button" id="closeUpload">Back to Menu</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    const loadingText = document.getElementById('loadingText');
+    const scrollText = document.getElementById('scrollText');
+    const menuContainer = document.getElementById('menuContainer');
+    const learnModelBtn = document.getElementById('learnModelBtn');
+    const dashboard = document.getElementById('dashboard');
+    const mainContent = document.getElementById('mainContent');
+    const backBtn = document.getElementById('backBtn');
+    const exploreBtn = document.getElementById('exploreBtn');
+    const explorer = document.getElementById('explorer');
+    const closeExplorer = document.getElementById('closeExplorer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const explorerTitle = document.getElementById('explorerTitle');
+    const predClass = document.getElementById('predClass');
+    const actualClass = document.getElementById('actualClass');
+    const predCertainty = document.getElementById('predCertainty');
+    const searchBtn = document.getElementById('searchBtn');
+    const uploadInterface = document.getElementById('uploadInterface');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const closeUpload = document.getElementById('closeUpload');
+    const fileInput = document.getElementById('fileInput');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const resultMessage = document.getElementById('resultMessage');
+    
+    let triggered = false;
+    let scrollReady = false;
+    let exoplanetData = [];
+    let currentIndex = 0;
+    let fluxChart = null;
+    let newPredictionData = null;
+
+    // Toggle flag
+    const lockScrollUntilPrompt = true;
+
+    // Wait for font to load
+    document.fonts.ready.then(() => {
+      loadingText.classList.add('animate');
+
+      // After zoom animation ends (6s) + 1s delay
+      setTimeout(() => {
+        scrollText.classList.add('fadeIn');
+        scrollReady = true;
+      }, 7000);
+    });
+
+    function triggerMenu() {
+      if (triggered) return;
+      if (lockScrollUntilPrompt && !scrollReady) return;
+      triggered = true;
+
+      loadingText.classList.add('slideUpFadeLarge');
+      scrollText.classList.add('slideUpFadeNormal');
+
+      // After animation finishes, show menu
+      setTimeout(() => {
+        loadingText.style.display = 'none';
+        scrollText.style.display = 'none';
+        menuContainer.classList.add('show');
+      }, 1500);
+    }
+
+    // Scroll/touch triggers
+    window.addEventListener('wheel', triggerMenu);
+    window.addEventListener('touchstart', triggerMenu);
+
+    // Dashboard functionality
+    learnModelBtn.addEventListener('click', () => {
+      menuContainer.style.display = 'none';
+      dashboard.classList.add('active');
+    });
+
+    // Back button functionality
+    backBtn.addEventListener('click', () => {
+      dashboard.classList.remove('active');
+      menuContainer.style.display = 'flex';
+    });
+
+    // Load exoplanet data
+    async function loadExoplanetData() {
+      try {
+        console.log('Attempting to load exoplanet data...');
+        const response = await fetch('inferenceData.json');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Raw data received:', data);
+        
+        // Handle if data is wrapped in an object or is directly an array
+        exoplanetData = Array.isArray(data) ? data : (data.data || []);
+        console.log('Loaded exoplanet data:', exoplanetData.length, 'entries');
+        
+        if (exoplanetData.length > 0) {
+          console.log('First entry:', exoplanetData[0]);
+        }
+      } catch (error) {
+        console.error('Error loading exoplanet data:', error);
+        alert('Failed to load exoplanet data. Check console for details.\nPath: backend/data/inferenceData.json');
+        exoplanetData = [];
+      }
+    }
+
+    // Initialize chart
+    function initChart() {
+      const ctx = document.getElementById('fluxChart').getContext('2d');
+      fluxChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Light Flux',
+            data: [],
+            borderColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Time',
+                color: 'white'
+              },
+              ticks: {
+                color: 'white'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Light Flux',
+                color: 'white'
+              },
+              ticks: {
+                color: 'white'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Display current exoplanet
+    function displayExoplanet(index) {
+      console.log('Displaying exoplanet at index:', index);
+      console.log('Total entries:', exoplanetData.length);
+      
+      if (exoplanetData.length === 0) {
+        console.error('No exoplanet data available');
+        return;
+      }
+      
+      const data = exoplanetData[index];
+      console.log('Current data:', data);
+      
+      explorerTitle.textContent = `Exoplanet ${data.id}`;
+      predClass.textContent = data.predictedClass;
+      actualClass.textContent = data.actualClass;
+      predCertainty.textContent = `${(data.predCertainty * 100).toFixed(2)}%`;
+
+      // Update chart
+      const timeLabels = data.fluxData.map((_, i) => i);
+      fluxChart.data.labels = timeLabels;
+      fluxChart.data.datasets[0].data = data.fluxData;
+      fluxChart.update();
+
+      // Update button states
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === exoplanetData.length - 1;
+      prevBtn.style.opacity = index === 0 ? '0.3' : '1';
+      nextBtn.style.opacity = index === exoplanetData.length - 1 ? '0.3' : '1';
+    }
+
+    // Explore button functionality
+    exploreBtn.addEventListener('click', async () => {
+      if (exoplanetData.length === 0) {
+        await loadExoplanetData();
+      }
+      menuContainer.style.display = 'none';
+      explorer.classList.add('active');
+      
+      if (!fluxChart) {
+        initChart();
+      }
+      
+      currentIndex = 0;
+      displayExoplanet(currentIndex);
+    });
+
+    // Navigation buttons
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        displayExoplanet(currentIndex);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < exoplanetData.length - 1) {
+        currentIndex++;
+        displayExoplanet(currentIndex);
+      }
+    });
+
+    // Close explorer
+    closeExplorer.addEventListener('click', () => {
+      explorer.classList.remove('active');
+      menuContainer.style.display = 'flex';
+      // Show navigation buttons again
+      prevBtn.style.display = 'flex';
+      nextBtn.style.display = 'flex';
+    });
+
+    // Search for new exoplanets
+    searchBtn.addEventListener('click', () => {
+      menuContainer.style.display = 'none';
+      uploadInterface.classList.add('active');
+    });
+
+    // Upload button click
+    uploadBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // File selection handler
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Show loading
+      loadingSpinner.classList.add('active');
+      resultMessage.className = 'result-message';
+      resultMessage.style.display = 'none';
+
+      try {
+        // Parse CSV
+        Papa.parse(file, {
+          complete: async (results) => {
+            try {
+              const data = results.data;
+              let fluxData = [];
+
+              // Extract flux data (assuming first row is data or skip header)
+              if (data.length > 0) {
+                const firstRow = data[0];
+                fluxData = firstRow.map(val => parseFloat(val)).filter(val => !isNaN(val));
+              }
+
+              if (fluxData.length !== 3197) {
+                throw new Error(`Expected 3197 flux values, got ${fluxData.length}`);
+              }
+
+              // Send to backend
+              const response = await fetch('http://localhost:5000/predict', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ fluxData })
+              });
+
+              if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+              }
+
+              const result = await response.json();
+
+              if (result.success) {
+                // Store result
+                newPredictionData = {
+                  id: 'New Discovery',
+                  fluxData: result.fluxData,
+                  predictedClass: result.predictedClass,
+                  actualClass: 'Unknown',
+                  predCertainty: result.predCertainty
+                };
+
+                // Show success message
+                resultMessage.className = 'result-message success';
+                resultMessage.textContent = `Analysis complete! Predicted: ${result.predictedClass} (${(result.predCertainty * 100).toFixed(2)}% confidence)`;
+                loadingSpinner.classList.remove('active');
+
+                // Show result after 2 seconds
+                setTimeout(() => {
+                  uploadInterface.classList.remove('active');
+                  showNewPrediction();
+                }, 2000);
+              } else {
+                throw new Error(result.error || 'Prediction failed');
+              }
+
+            } catch (error) {
+              console.error('Processing error:', error);
+              resultMessage.className = 'result-message error';
+              resultMessage.textContent = `Error: ${error.message}`;
+              loadingSpinner.classList.remove('active');
+            }
+          },
+          error: (error) => {
+            console.error('CSV parse error:', error);
+            resultMessage.className = 'result-message error';
+            resultMessage.textContent = `Error parsing CSV: ${error.message}`;
+            loadingSpinner.classList.remove('active');
+          }
+        });
+
+      } catch (error) {
+        console.error('File handling error:', error);
+        resultMessage.className = 'result-message error';
+        resultMessage.textContent = `Error: ${error.message}`;
+        loadingSpinner.classList.remove('active');
+      }
+    });
+
+    // Show new prediction
+    function showNewPrediction() {
+      if (!newPredictionData) return;
+
+      explorer.classList.add('active');
+      
+      if (!fluxChart) {
+        initChart();
+      }
+
+      explorerTitle.textContent = `Exoplanet ${newPredictionData.id}`;
+      predClass.textContent = newPredictionData.predictedClass;
+      actualClass.textContent = newPredictionData.actualClass;
+      predCertainty.textContent = `${(newPredictionData.predCertainty * 100).toFixed(2)}%`;
+
+      const timeLabels = newPredictionData.fluxData.map((_, i) => i);
+      fluxChart.data.labels = timeLabels;
+      fluxChart.data.datasets[0].data = newPredictionData.fluxData;
+      fluxChart.update();
+
+      // Hide navigation buttons for single prediction
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    }
+
+    // Close upload interface
+    closeUpload.addEventListener('click', () => {
+      uploadInterface.classList.remove('active');
+      menuContainer.style.display = 'flex';
+      fileInput.value = '';
+      resultMessage.className = 'result-message';
+      resultMessage.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
