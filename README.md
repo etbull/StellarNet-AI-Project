@@ -53,8 +53,7 @@ StellarNet/
 
 ---
 
-## 🛠️ How to Use it
-
+## 🛠️ How to Use it ##
 
 Please download the docker container and run it to test the website! Unfortunately it is not hosted anywhere. 
 Alternatively, you can clone the respository yourself and run the following commands to build it yourself:
