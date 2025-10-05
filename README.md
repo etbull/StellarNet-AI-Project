@@ -107,7 +107,17 @@ StellarNet includes a unique, modern, space-themed interface! It contains severa
      <img width="2877" height="1468" alt="image" src="https://github.com/user-attachments/assets/586bd125-bdac-4f2b-9a06-d12e3238e15b" />
 
   5. Feature to learn more about Exoplanets: This links to NASA's page on exoplanets, providing education for users.
-  7. Model Analysis Mode: This allows the user to take a look inside the model and see what's going on. 
+  7. Model Analysis Mode: This allows the user to take a look inside the model and see what's going on.
+
+---
+
+## 🛠️ How to Collect Light Flux Data
+
+Light Flux data is easily accessible, and relatively cheap to collect. Several turorials exist online, some of which are listed below.  
+  1. https://heasarc.gsfc.nasa.gov/docs/tess/LightCurveFile-Object-Tutorial.html  
+  2. https://www.youtube.com/watch?v=EfMPl2SaSjM
+
+After this data has been collected, merely put it into a csv file of any length. No need to normalise or standardise, we will do that for you!
 
 ---
 ## Thanks for looking at my project!
