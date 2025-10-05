@@ -2,5 +2,6 @@ flask
 flask-cors
 torch
 numpy
+torch.nn.functional
 pandas
-scipy
+scipy.signal  
