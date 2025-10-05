@@ -55,6 +55,7 @@ StellarNet/
 
 ## 🛠️ How to Use it
 
+
 Please download the docker container and run it to test the website! Unfortunately it is not hosted anywhere. 
 Alternatively, you can clone the respository yourself and run the following commands to build it yourself:
 `git clone https://github.com/<your-username>/StellarNet.git
@@ -67,6 +68,22 @@ cd StellarNet
 `
 http://localhost:8000/index.html
 `  
+---
+<img width="1919" height="979" alt="image" src="https://github.com/user-attachments/assets/6536a620-3c27-40cb-a89a-4cc256947e89" />
+
+## 🛠️ User Experience
+
+StellarNet includes a unique, modern, space-themed interface! It contains several features for users including:
+  1. Option to explore current Exoplanets: This allows users to scroll through current planets, their light curves, and the models output on them.
+     <img width="2866" height="1482" alt="image" src="https://github.com/user-attachments/assets/d9aae6e7-264d-4e39-9091-5e1f5bf0a046" />
+
+  3. Searching for new Exoplanets: This allows users to upload a CSV of any sized light flux and the model will analyse it in real time!
+     <img width="2877" height="1468" alt="image" src="https://github.com/user-attachments/assets/586bd125-bdac-4f2b-9a06-d12e3238e15b" />
+
+  5. Feature to learn more about Exoplanets: This links to NASA's page on exoplanets, providing education for users.
+  7. Model Analysis Mode: This allows the user to take a look inside the model and see what's going on. 
+
+---
 ## Thanks for looking at my project!
 ---
 
