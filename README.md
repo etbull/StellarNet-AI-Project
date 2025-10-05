@@ -4,6 +4,7 @@
 Note: To minimise costs, the deployed website is static with no backend. To see the backend code, look at the backend file in the Github OR view the demo video below!  
 [Check out my StellarNet site](https://stellarweb.earth)  
 
+### StellarNet | Making Space Exploration Accessible to All!
 
 Space unites us all, for centuries humans have wondered what lies beyond our Earth. It is a privilege to live in a time where we can discover other worlds. However, technology and complexity stop many people from looking up. That's where StellarNet comes in.
 StellarNet is a state of the art AI model with a modern intuitive web interface that allows amateur astronomers to upload light flux data they collect, and determine if they have captured an exoplanet! No need for expensive software, complex data wrangling, or un-intuitive software. We do all the hard work behind the scenes, democratising space exploration and helping show others the wonder of space. 
@@ -27,6 +28,7 @@ StellarNet is website project for the NASA Space Apps 2025 Hackathon that allows
 
 ## 📷 Demo Video (Please Watch)
 Please watch the demo! It is less than 3 minutes :) 
+Alternatively you can access the 30 second demo here: https://www.youtube.com/watch?v=Q9BJvIJa74E
 <p align="center">
   <a href="https://www.youtube.com/watch?v=sizi69MfH-A" target="_blank">
     <img src="https://img.youtube.com/vi/sizi69MfH-A/hqdefault.jpg" alt="Watch the video" width="720">
