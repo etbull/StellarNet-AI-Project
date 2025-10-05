@@ -38,6 +38,8 @@ Fully Connected Layers:
 - **Class Imbalance**: The most difficult part about this model was handling class imbalances. There were only a few positive exoplanets and many negative ones. To combat this, I used two techniques:
 - **Class Weighting**: Increasing the importance of positive exoplanet examples during training.
 - **Data Augmentation**: Generating additional synthetic exoplanet signals to balance the dataset.
+  <img width="617" height="562" alt="image" src="https://github.com/user-attachments/assets/6c4b1140-e309-4bc5-96ac-81cd8885c952" />
+
 
 ---
 
