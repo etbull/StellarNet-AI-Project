@@ -41,7 +41,7 @@ Fully Connected Layers:
 
 ---
 
-## 🛠️ Project Structure
+## 🛠️ Project Structure 
 
 StellarNet/  
 ├─ frontend/ # Web front-end (index.html, CSS, JS)  
@@ -53,20 +53,18 @@ StellarNet/
 
 ---
 
-## 🛠️ How to Use it ##
+## 🛠️ How to Use it 
 
 Please download the docker container and run it to test the website! Unfortunately it is not hosted anywhere. 
-Alternatively, you can clone the respository yourself and run the following commands to build it yourself:
-`git clone https://github.com/<your-username>/StellarNet.git
+Alternatively, you can clone the respository yourself and run the following commands to build it yourself:  
+```bash
+git clone https://github.com/<your-username>/StellarNet.git
 cd StellarNet
-`  
-`docker build -t stellarnet .
-`  
-`docker run -p 8000:8000 -p 5000:5000 stellarnet
-`  
-`
-http://localhost:8000/index.html
-`  
+docker build -t stellarnet .
+docker run -p 8000:8000 -p 5000:5000 stellarnet
+yaml
+Copy code
+```
 ---
 <img width="1919" height="979" alt="image" src="https://github.com/user-attachments/assets/6536a620-3c27-40cb-a89a-4cc256947e89" />
 
