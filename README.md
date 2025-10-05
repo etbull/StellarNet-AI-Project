@@ -83,7 +83,7 @@ StellarNet/
 ## 🛠️ How to Use it 
 
 Please download the docker container and run it to test the website! 
-You can get it from this link: `link_loading` (It exposes port 5000)   
+You can get it from this link: `https://hub.docker.com/r/ethanturnbull/stellarnet` (It exposes port 5000)   
 Alternatively, you can clone the respository yourself and run the following commands to build it yourself:  
 Note: Some of the data file in Github were to large, so the have been replaced with Google Drive links
 ```bash
