@@ -38,7 +38,32 @@ Fully Connected Layers:
 - **Class Imbalance**: The most difficult part about this model was handling class imbalances. There were only a few positive exoplanets and many negative ones. To combat this, I used two techniques:
 - **Class Weighting**: Increasing the importance of positive exoplanet examples during training.
 - **Data Augmentation**: Generating additional synthetic exoplanet signals to balance the dataset.
-  <img width="617" height="562" alt="image" src="https://github.com/user-attachments/assets/6c4b1140-e309-4bc5-96ac-81cd8885c952" />
+  ```python
+  class Model(nn.Module):
+    def __init__(self, input_length, num_classes):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv1d(1, 32, 5, padding=2)
+        self.bn1 = nn.BatchNorm1d(32)
+        self.conv2 = nn.Conv1d(32, 64, 5, padding=2)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.conv3 = nn.Conv1d(64, 128, 3, padding=1)
+        self.bn3 = nn.BatchNorm1d(128)
+        self.pool = nn.MaxPool1d(2)
+        self.dropout = nn.Dropout(0.3)
+        self.fc1 = nn.Linear((input_length // 2) * 128, 128)
+        self.fc2 = nn.Linear(128, num_classes)
+        
+    def forward(self, x):
+        x = x.unsqueeze(1)
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = self.pool(F.relu(self.bn3(self.conv3(x))))
+        x = self.dropout(x)
+        x = x.view(x.size(0), -1)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+  ```
 
 
 ---
