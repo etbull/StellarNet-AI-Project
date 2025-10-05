@@ -1,5 +1,8 @@
 # StellarNet - Hunt for Exoplanets with AI!
 
+Space unites us all, for centuries humans have wondered what lies beyond our Earth. It is a privilege to live in a time where we can discover other worlds. However, technology and complexity stop many people from looking up. That's where StellarNet comes in.
+StellarNet is a state of the art AI model with a modern intuitive web interface that allows amateur astronomers to upload light flux data they collect, and determine if they have captured an exoplanet! No need for expensive software, complex data wrangling, or un-intuitive software. We do all the hard work behind the scenes, democratising space exploration and helping show others the wonder of space. 
+
 StellarNet is website project for the NASA Space Apps 2025 Hackathon that allows amateur astronomers to hunt for Exoplanets! The most common way to look for Exoplanets is by collecting light flux data, however, until now it has been difficult to process and interpret this data. StellarNet provides an easy and accurate way for amateurs to determine if light flux data contains an Exoplanet. Using a custom CNN model, built with PyTorch and trained on both amateur and professional data, users can explore current exoplanet data and upload their own to test!
 
 ### Take a Look at the Website!  
