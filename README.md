@@ -23,7 +23,7 @@ StellarNet is website project for the NASA Space Apps 2025 Hackathon that allows
 Please watch the demo! It is less than 3 minutes :) 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=sizi69MfH-A" target="_blank">
-    <img src="https://img.youtube.com/vi/sizi69MfH-A/maxresdefault.jpg" alt="Watch the video" width="720">
+    <img src="https://img.youtube.com/vi/sizi69MfH-A/hqdefault.jpg" alt="Watch the video" width="720">
   </a>
 </p>
 
