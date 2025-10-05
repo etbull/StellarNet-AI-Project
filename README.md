@@ -2,7 +2,7 @@
 
 StellarNet is website project for the NASA Space Apps 2025 Hackathon that allows amateur astronomers to hunt for Exoplanets! The most common way to look for Exoplanets is by collecting light flux data, however, until now it has been difficult to process and interpret this data. StellarNet provides an easy and accurate way for amateurs to determine if light flux data contains an Exoplanet. Using a custom CNN model, built with PyTorch and trained on both amateur and professional data, users can explore current exoplanet data and upload their own to test!
 
-[![Please Watch the Demo Video](https://www.youtube.com/watch?v=sizi69MfH-A.jpg)](https://www.youtube.com/watch?v=sizi69MfH-A)
+[![Please Watch the Demo Video (2.9 mins)](https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=sizi69MfH-A)
 
 
 <img width="1919" height="979" alt="image" src="https://github.com/user-attachments/assets/36116043-3e2f-483e-91c4-0dfe11a10ef4" />
