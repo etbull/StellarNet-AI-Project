@@ -16,7 +16,7 @@ StellarNet is website project for the NASA Space Apps 2025 Hackathon that allows
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Interactive Front-End**: Accessible through `index.html` in your browser.
 - **Backend API**: Python API (Flask) for data processing and model inference
@@ -38,7 +38,7 @@ Alternatively you can access the 30 second demo here: https://www.youtube.com/wa
 
 ---
 
-## 🚀 Model Information  
+## Model Information  
 
 - **Architecture**: A 1D Convolutional Neural Network specifically trained to analyse time series light flux data.
 - **Structure**:
@@ -90,7 +90,7 @@ Fully Connected Layers:
 
 ---
 
-## 🛠️ Project Structure 
+## Project Structure 
 
 StellarNet/  
 ├─ frontend/ # Web front-end (index.html, CSS, JS)  
@@ -102,14 +102,14 @@ StellarNet/
 
 ---
 
-## 🛠️ How to Use it 
+## How to Use it 
 
 Please download the docker container and run it to test the website! 
-You can get it from this link: `https://hub.docker.com/r/ethanturnbull/stellarnet` (It exposes port 5000)   
+You can get it from this link: `https://hub.docker.com/r/ethantbull/stellarnet` (It exposes port 5000)   
 Alternatively, you can clone the respository yourself and run the following commands to build it yourself:  
 Note: Some of the data file in Github were to large, so the have been replaced with Google Drive links
 ```bash
-git clone https://github.com/<your-username>/StellarNet.git
+git clone https://github.com/etbull/StellarNet.git
 cd StellarNet
 docker build -t stellarnet .
 docker run -p 8000:8000 -p 5000:5000 stellarnet
@@ -119,7 +119,7 @@ Copy code
 ---
 <img width="1919" height="979" alt="image" src="https://github.com/user-attachments/assets/6536a620-3c27-40cb-a89a-4cc256947e89" />
 
-## 🛠️ User Experience
+## User Experience
 
 StellarNet includes a unique, modern, space-themed interface! It contains several features for users including:
   1. Option to explore current Exoplanets: This allows users to scroll through current planets, their light curves, and the models output on them.
